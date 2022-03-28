@@ -55,7 +55,7 @@ task('deploy', [
     'deploy:secrets', // Deploy secrets
     'deploy:shared',
     'deploy:vendors',
-    'deploy:writable',
+    // 'deploy:writable',
     'artisan:storage:link', // |
     'artisan:view:cache',   // |
     'artisan:config:cache', // | Laravel Specific steps

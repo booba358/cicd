@@ -2,7 +2,7 @@ name: CI-CD
 
 on:
   push:
-    branches: development
+    branches: main
 
 jobs:
   build-js:
@@ -15,6 +15,8 @@ jobs:
           yarn install
           yarn prod
           cat public/mix-manifest.json # See asset versions in log
+      - name: Directory permition
+        run: chmod -R 777 storage bootstrap
       - name: Upload build files
         uses: actions/upload-artifact@v1
         with:
@@ -61,15 +63,3 @@ jobs:
         env:
           DOT_ENV: ${{ secrets.DOT_ENV }}
         run: dep deploy production --tag=${{ env.GITHUB_REF }} -vvv
-
-
-        - name: Clear Cache via SSH
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: |
-            cd /home/devparkk/public_html
-            php artisan cache:clear
-            php artisan config:clear
-            php artisan config:cache
-
-

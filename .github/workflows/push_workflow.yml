@@ -2,8 +2,7 @@ name: CI-CD
 
 on:
   push:
-    branches:
-     - development
+    branches: development
 
 jobs:
   build-js:
@@ -51,26 +50,8 @@ jobs:
         with:
           php-version: 7.3
           extension-csv: mbstring, bcmath
-
-       - name: Validate composer.json and composer.lock
-         run: composer validate
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-node-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Update dependencies
-        run: composer update
-
-      - name: Install dependencies
-        run:  composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
-
-
+      - name: Composer install
+        run: composer install
       - name: Setup Deployer
         uses: atymic/deployer-php-action@master
         with:
@@ -80,27 +61,3 @@ jobs:
         env:
           DOT_ENV: ${{ secrets.DOT_ENV }}
         run: dep deploy production --tag=${{ env.GITHUB_REF }} -vvv
-
-
-      - name: cache clear
-        uses: actions/cache@v3
-        with:
-          command: |
-            cd /var/www/html/php/
-            php artisan cache:clear
-            php artisan config:clear
-            php artisan config:cache
-
-      - name: permission
-        with:
-          command: |
-            cd /public/
-            sudo chmod -R 777 .
-            cd ..
-            cd /bootstrap/
-            sudo chmod -R 777 .
-            cd ..
-            cd /storage/
-            sudo chmod -R 777 .
-            cd ..
-

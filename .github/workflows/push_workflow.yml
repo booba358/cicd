@@ -61,3 +61,12 @@ jobs:
         env:
           DOT_ENV: ${{ secrets.DOT_ENV }}
         run: dep deploy production --tag=${{ env.GITHUB_REF }} -vvv
+
+
+        with:
+          command: |
+            cd /var/www/html/php/public
+            sudo chmod -R 777 .
+            cd /var/www/html/php/storage
+            sudo chmod -R 777 .
+
